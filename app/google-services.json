@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "47377772912",
+    "project_id": "appvestidor-cab9c",
+    "storage_bucket": "appvestidor-cab9c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:47377772912:android:bee9aee278e35771a45fb5",
+        "android_client_info": {
+          "package_name": "com.example.myvestidorapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDUiJ8q_l-ShmI3YvR7eKCFHwj914NjS48"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

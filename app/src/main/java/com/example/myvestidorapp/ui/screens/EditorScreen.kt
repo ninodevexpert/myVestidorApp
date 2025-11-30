@@ -58,6 +58,7 @@ fun EditorScreen(
     val userPhotoUri by viewModel.userPhotoUri.collectAsState()
     val clothingImages by viewModel.clothingImages.collectAsState()
     val isGenerating by viewModel.isGenerating.collectAsState()
+    val generatedImageUri by viewModel.generatedImageUri.collectAsState()
     val context = LocalContext.current
     
     val cameraUri = remember { mutableStateOf<Uri?>(null) }
@@ -285,6 +286,37 @@ fun EditorScreen(
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth()
             )
+        }
+        
+        if (generatedImageUri != null) {
+            Spacer(modifier = Modifier.height(24.dp))
+            
+            Text(
+                text = "Resultado:",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(bottom = 12.dp)
+            )
+            
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(400.dp)
+                    .clip(RoundedCornerShape(16.dp))
+                    .border(1.dp, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(16.dp))
+                    .background(Color.Black.copy(alpha = 0.05f))
+            ) {
+                 Image(
+                    painter = rememberAsyncImagePainter(
+                        ImageRequest.Builder(context)
+                            .data(generatedImageUri)
+                            .build()
+                    ),
+                    contentDescription = "Imagen Generada",
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Fit
+                )
+            }
         }
     }
 }
