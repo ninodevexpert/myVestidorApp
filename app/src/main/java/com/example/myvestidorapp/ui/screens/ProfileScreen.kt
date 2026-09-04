@@ -5,7 +5,6 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -14,9 +13,11 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,126 +31,110 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.example.myvestidorapp.MainViewModel
+import com.example.myvestidorapp.ui.components.CameraOutline
+import com.example.myvestidorapp.ui.components.CoutureBackground
+import com.example.myvestidorapp.ui.components.PrimaryCoutureButton
+import com.example.myvestidorapp.ui.components.dashedRoundedBorder
+import com.example.myvestidorapp.ui.theme.RoseIcon
+import com.example.myvestidorapp.ui.theme.RoseOutline
 
 @Composable
 fun ProfileScreen(
     viewModel: MainViewModel,
-    onContinue: () -> Unit
+    onContinue: () -> Unit,
 ) {
     val userPhotoUri by viewModel.userPhotoUri.collectAsState()
     val context = LocalContext.current
-    
     val imagePickerLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetContent()
-    ) { uri: Uri? ->
-        uri?.let {
-            viewModel.setUserPhoto(it)
-        }
-    }
-    
+        contract = ActivityResultContracts.GetContent(),
+    ) { uri: Uri? -> uri?.let(viewModel::setUserPhoto) }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(24.dp),
+            .background(CoutureBackground)
+            .statusBarsPadding()
+            .navigationBarsPadding()
+            .padding(horizontal = 20.dp, vertical = 24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
     ) {
         Text(
             text = "Configura tu Perfil",
-            style = MaterialTheme.typography.headlineMedium,
-            fontWeight = FontWeight.Bold,
+            style = MaterialTheme.typography.headlineLarge,
+            color = MaterialTheme.colorScheme.onBackground,
             textAlign = TextAlign.Center,
-            modifier = Modifier.padding(bottom = 8.dp)
         )
-        
+        Spacer(Modifier.height(6.dp))
         Text(
-            text = "Sube una foto de perfil. Recomendamos que sea de pie, de frente y en una postura natural.",
+            text = "Sube una foto de perfil.\nRecomendamos que sea de pie, de\nfrente y en una postura natural.",
             style = MaterialTheme.typography.bodyMedium,
-            textAlign = TextAlign.Center,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.padding(bottom = 24.dp)
+            textAlign = TextAlign.Center,
         )
+        Spacer(Modifier.height(28.dp))
 
-        val previewShape = RoundedCornerShape(24.dp)
+        val previewShape = RoundedCornerShape(28.dp)
         Box(
             modifier = Modifier
+                .weight(1f)
                 .fillMaxWidth()
-                .height(400.dp)
                 .clip(previewShape)
-                .background(MaterialTheme.colorScheme.surfaceVariant)
-                .border(3.dp, MaterialTheme.colorScheme.primary, previewShape)
+                .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.5f))
+                .dashedRoundedBorder(RoseOutline.copy(alpha = 0.8f), 28.dp, 1.5.dp, 5.dp)
                 .clickable { imagePickerLauncher.launch("image/*") },
-            contentAlignment = Alignment.Center
+            contentAlignment = Alignment.Center,
         ) {
             if (userPhotoUri != null) {
                 Image(
                     painter = rememberAsyncImagePainter(
-                        ImageRequest.Builder(context)
-                            .data(userPhotoUri)
-                            .build()
+                        ImageRequest.Builder(context).data(userPhotoUri).build(),
                     ),
                     contentDescription = "Foto de perfil",
-                    modifier = Modifier.fillMaxSize(),
-                    contentScale = ContentScale.Fit
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(8.dp)
+                        .clip(RoundedCornerShape(22.dp)),
+                    contentScale = ContentScale.Fit,
                 )
             } else {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
+                    verticalArrangement = Arrangement.Center,
                 ) {
+                    CameraOutline(modifier = Modifier.size(58.dp), color = RoseIcon)
+                    Spacer(Modifier.height(14.dp))
                     Text(
-                        text = "📷",
-                        fontSize = 48.sp
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text(
-                        text = "Toca para agregar foto",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        textAlign = TextAlign.Center
+                        text = "TOCA PARA AGREGAR FOTO",
+                        style = MaterialTheme.typography.labelLarge,
+                        fontWeight = FontWeight.Bold,
+                        color = RoseIcon,
                     )
                 }
             }
         }
-        
-        Spacer(modifier = Modifier.height(48.dp))
-        
-        Button(
+
+        Spacer(Modifier.height(24.dp))
+        PrimaryCoutureButton(
+            text = if (userPhotoUri == null) "SELECCIONAR FOTO" else "CAMBIAR FOTO",
             onClick = { imagePickerLauncher.launch("image/*") },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text(
-                text = if (userPhotoUri != null) "Cambiar Foto" else "Seleccionar Foto",
-                modifier = Modifier.padding(vertical = 4.dp)
-            )
-        }
-        
-        Spacer(modifier = Modifier.height(16.dp))
-        
-        Button(
+        )
+        Spacer(Modifier.height(10.dp))
+        PrimaryCoutureButton(
+            text = "CONTINUAR",
             onClick = onContinue,
             enabled = userPhotoUri != null,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text(
-                text = "Continuar",
-                modifier = Modifier.padding(vertical = 4.dp)
-            )
-        }
-        
+        )
         if (userPhotoUri == null) {
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(Modifier.height(8.dp))
             Text(
                 text = "Debes agregar una foto para continuar",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.error,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
             )
         }
     }
 }
-

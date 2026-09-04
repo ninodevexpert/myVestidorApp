@@ -59,6 +59,8 @@ dependencies {
     implementation(libs.firebase.analytics)
     implementation(libs.firebase.ai)
     implementation(libs.firebase.common.ktx)
+    debugImplementation(libs.firebase.appcheck.debug)
+    releaseImplementation(libs.firebase.appcheck.playintegrity)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
